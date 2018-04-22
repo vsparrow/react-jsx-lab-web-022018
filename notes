@@ -1,0 +1,238 @@
+notes
+provide React with a template of what the component should look like once it is finished being prepared, i.e.
+<div id="my-hog-world" className="dank-styling">
+  { filteredHogsArray.map(hog => "<img src=${hog.img}>") }
+  <!-- ^ e.g. show all my hogs in list elements! -->
+</div>
+declarative: not told it what to explicitly add/delete from the DOM
+
+Imperative vs Declarative
+imperative:
+  const people = ['Amanda', 'Geoff', 'Michael', 'Richard', 'Ryan', 'Tyler']
+  const excitedPeople = []
+  for (let i = 0; i < people.length; i++) {  excitedPeople[i] = people[i] + '!'}
+declarative
+  const people = ['Amanda', 'Geoff', 'Michael', 'Richard', 'Ryan', 'Tyler']
+  const excitedPeople = people.map(name => name + '!')
+
+
+Component
+  split the UI into independent, reusable pieces, and think about each piece in isolation.
+Component Example:
+class Comment extends React.Component{
+render(){
+    return <div>
+        i am a hard coded comment! help! make me dynamic!
+    </div>
+  }
+}
+******************************************with re-reusable
+class Comment extends React.Component {
+  render() {
+    return (        //'templating' nature of React Information is passed to the component itself, which can then// dynamically render it.
+      <div className="comment">// `className=` is used in place of traditional `class=`
+        {this.props.content}
+      </div>
+    )
+  }
+}
+
+class BlogPost extends React.Component {
+  render() {
+    return (
+      <div id="blog-post">
+
+        <div id="blog-content">
+          Dear Reader: Bjarne Stroustrup has the perfect lecture oration.
+        </div>
+
+        <Comment content={"I agree with this statement. - Angela Merkel"}/>
+        <Comment content={"A universal truth. - Noam Chomsky"}/>
+        <Comment content={"Truth is singular. Its ‘versions’ are mistruths. - Sonmi-451"}/>
+
+      </div>
+    )
+  }
+}
+// content={'blah'} portion. We are defining a variable that is passed to
+// every `Comment` component. Thereafter, we can access that `content` variable within
+// the `Comment` component via the `this.props.content` you see above.
+******************
+export component
+The reason we are exporting them here is so that our testing suite will have access to them.
+
+
+*********
+Babel
+npm start
+  to complete the Babel compiling, Webpack bundling, process.
+npm run watch
+  will initiate 'hot reloading', which re-pushes your application to the browser anytime you save files you are working on.
+
+
+******************
+JSX
+A React component written in JSX looks something like this:
+
+class Tweet extends React.Component {
+  render() {
+    return (
+      <div className="tweet">
+        <img src="http://twitter.com/some-avatar.png" className="tweet__avatar" />
+        <div className="tweet__body">
+            <p>We are writing this tweet in JSX. Holy moly!</p>
+        </div>
+      </div>
+    );
+  }
+}
+
+
+JSX always has one, and only one element (that optionally has children, grandchildren, and so on).
+CANT DO This
+  return (
+    <p>I am the first paragraph</p>
+    <p>I am the second paragraph</p>
+  );
+CAN DO THIS
+  return (
+    <div>
+      <p>I am the first paragraph</p>
+      <p>I am the second paragraph</p>
+    </div>
+  );
+WHICH IS THE SAME AS
+  return React.createElement(
+    "div",
+    null,
+    React.createElement(
+      "p",
+      null,
+      "I am the first paragraph"
+    ),
+    React.createElement(
+      "p",
+      null,
+      "I am the second paragraph"
+    )
+  );
+
+
+RESEVER CLASS WORDS
+If you want to use the HTML for attribute, you'd use htmlFor instead.
+HTML classes using the className attribute (or prop, in React terms), instead of class
+******************************
+/src/components/foo.js
+  export const message = "I am a component!";
+/src/index.js
+  import { message } from './components/foo';
+******************************
+Because we are exporting this object as default without a name, we can assign it any name when we import it (in this case "fruit").
+
+// In a file called `fruits.js`
+export default {
+ apple: 'red',
+ banana: 'yellow',
+};
+
+// In a file in the same directory
+import fruit from './fruits';
+console.log(fruit.apple); // prints 'red'
+
+// In another file, also in the same directory
+import { apple } from './fruits';
+console.log(apple); // prints 'red'
+
+///////////compared to export with name
+// In a file called `Tweet.js`
+import React from 'react';
+
+class Tweet extends React.Component {
+  render() {
+    return (
+      <div className="tweet">
+        <img src="http://twitter.com/some-avatar.png" className="tweet__avatar" />
+        <div className="tweet__body">
+          <p>We are writing this tweet in JSX. Holy moly!</p>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default Tweet;
+
+// In a file in the same directory
+import Tweet from './Tweet';
+import ReactDOM from 'react-dom';
+
+ReactDOM.render(
+  <Tweet />,
+  document.getElementById('root')
+);
+///////////////////////////////////////
+REACT EXAMPLE:
+
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+const BUTCHER_PRODUCTS = [
+  'Tenderloin',
+  'Short ribs',
+  'Beef shin',
+  'Ribeye'
+]
+
+// Define these exported classes
+export class OlderCoaster extends React.Component {
+  render() {
+    return (
+      <div className="oldercoaster">
+        <p>Two grannies having the time of their life!</p>
+        <p>Passengers:</p>
+        <ul>
+          <li>Agnes</li>
+          <li>Muriel</li>
+        </ul>
+      </div>
+    )
+  }
+}
+
+export class InFrontOfYou extends React.Component {
+  render() {
+    return (
+      <div>
+        <p>You shouldn't look too far.</p>
+        <p>Sometimes, the solution is right in front of you.</p>
+      </div>
+    )
+  }
+}
+export class ButcherShop extends React.Component {
+  render() {
+    const products = BUTCHER_PRODUCTS.map((p, idx) => (<li key={idx}>{p}</li>))
+    return (
+      <div className="butcher-shop">
+        <p>Hello! We have the following products for sale today:</p>
+        <ul>
+          { products }
+        </ul>
+      </div>
+    )
+  }
+}
+export class App extends React.Component {
+  render() {
+    return (
+      <div id="app">
+        <OlderCoaster />
+        <InFrontOfYou />
+        <ButcherShop />
+      </div>
+    )
+  }
+}
+ReactDOM.render(<App />, document.getElementById('root'))
+END REACT EXAMPLE
+///////////
